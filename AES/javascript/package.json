@@ -1,0 +1,21 @@
+{
+  "name": "aes-js",
+  "version": "0.0.1",
+  "description": "AES implementation using Javascript",
+  "main": "main.js",
+  "scripts": {
+    "test": "jest --watchAll --colors"
+  },
+  "keywords": [
+    "aes",
+    "encrypt",
+    "algo",
+    "javascript"
+  ],
+  "author": "Islam NEGM",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^27.3.1"
+  },
+  "dependencies": {}
+}
