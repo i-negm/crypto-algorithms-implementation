@@ -20,26 +20,6 @@ def test_get_rand_bits__it_generates_not_equal_numbers():
   # Assert
   assert rand1 != rand2
 
-def test_euclid_gcd__it_finds_eculid_gcd():
-  # Arrange
-  expected = 17
-  m = 323
-  n = 238
-  # Act
-  actual = rsa.euclid_gcd(m,n)
-  # Assert
-  assert actual == expected
-
-def test_euclid_gcd__it_finds_eculid_gcd_for_rearranged_parameters():
-  # Arrange
-  expected = 17
-  m = 238
-  n = 323
-  # Act
-  actual = rsa.euclid_gcd(m,n)
-  # Assert
-  assert actual == expected
-
 def test__calc_jacobian():
   # Arrange
   expected = -1
@@ -50,17 +30,20 @@ def test__calc_jacobian():
   # Assert
   assert actual == expected
 
-# def test__calc_euler_criterion():
-#   # Arrange
-#   expected = -1
-#   r = 1001
-#   p = 9907
-#   # Act
-#   actual = rsa.calc_euler_criterion(r, p)
-#   # Assert
-#   assert actual == expected
+def test__gcd_euclidean():
+  assert rsa.gcd_euclidean(612, 56)        == 4
+  assert rsa.gcd_euclidean(56, 612)        == 4
+  assert rsa.gcd_euclidean(120, 30)        == 30
+  assert rsa.gcd_euclidean(238, 237)       == 1
+  assert rsa.gcd_euclidean(132, 84)        == 12
+  assert rsa.gcd_euclidean(177855, 177856) == 1
+  assert rsa.gcd_euclidean(105, 165)       == 15
+  assert rsa.gcd_euclidean(939764, 1)      == 1
+  assert rsa.gcd_euclidean(950218, 0)      == 950218
+  assert rsa.gcd_euclidean(9653, 9653)     == 9653
 
-def test__generate_primes():
-  p, q = rsa.generate_primes(250) 
-  print((p), (q))
-  assert False
+def test__fast_exp_mod():
+  assert rsa.fast_exp_mod(3, 18, 29)       == 6
+  assert rsa.fast_exp_mod(7, 66, 101)      == 30
+  assert rsa.fast_exp_mod(4, 25, 53)       == 40
+

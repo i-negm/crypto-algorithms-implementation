@@ -8,49 +8,41 @@ def get_rand_bits(bits):
   return random.getrandbits(bits)
 
 
-'''
-  Random Prime Numbers
-   1. Primality Test
-     1.a. Euclidian GCD (m, n) == 1
-     1.b. Primility Test for Jacobian and Euler Equation
-'''
-def euclid_gcd(m, n):
-  #
-  # @ref : Slide 15 CIT 620
-  #
-  # Assume the equation
-  #  m_lst = div * quotient_lst + remainder_lst; m > n
+def fast_exp_mod(base, exp, mod):
+  '''
+  Problem 15.3.4: Fast exponentiation given certain powers
+  https://mathstats.uncg.edu/sites/pauli/112/HTML/secfastexp.html#exfastexp47
+  '''
+  a = 1               # Accumelator of the value
+  c = base
+  n = exp
+  while (n != 0):
+    r = n % 2     # Check if the current base is 1 or 0
+    if (r == 1):
+      a = (a * c) % mod     # Accumelate the value
+    n = int(n / 2)          # For the next digit (in binary)
+    c = (c * c) % mod       # Calculate the square to be used in next step
+  return a
 
-  # Sanity check m > n
-  if (n < m):
-    temp = m
-    m = n
-    n = temp
+def gcd_euclidean(a, b):
+  '''
+    Section 4.3: Euclidean Algorithm 
+    https://mathstats.uncg.edu/sites/pauli/112/HTML/seceuclid.html#seceuclid
+  '''
+  if (b > a):
+    temp = a
+    a = b
+    b = temp
 
-  # Using arrays as a way to hold the division steps
-  remainder_lst = []
-  quotient_lst = []
-  m_lst = []
+  # Special cases
+  if (b == 0): return a
 
-  # For the first time the remainder_lst = n (second smaller number)
-  m_lst.append(m)
-  remainder_lst.append(m_lst[0] % n)
-  quotient_lst.append(n)                          # In next rounds it will be remainder[i-1]
-  div = m_lst[0] // quotient_lst[0]
-
-  i = 0
-  while (remainder_lst[i] != 0):                     # Continue until remainder = 0
-    # Each round
-    i = i+1
-    # 1.a. Shift previous step remainder_lst into current step quotient_lst
-    quotient_lst.append(remainder_lst[i-1])
-    # 1.b. Shift previous step quotient_lst into current m_lst
-    m_lst.append(quotient_lst[i-1])
-    # 2. Calculate current div
-    div = m_lst[i] // quotient_lst[i]
-    # 3. Calculate current remainder_lst
-    remainder_lst.append(m_lst[i] % quotient_lst[i])  
-  return remainder_lst[i-1]
+  r = 1 # init r to be used in condition (to any value, will be overwritten)
+  while (r != 0):
+    r = a % b
+    a = b
+    b = r
+  return a
 
 def is_prime(num):
   for i in range(0,9):
