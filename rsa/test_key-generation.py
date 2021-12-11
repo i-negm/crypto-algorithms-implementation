@@ -40,3 +40,27 @@ def test_euclid_gcd__it_finds_eculid_gcd_for_rearranged_parameters():
   # Assert
   assert actual == expected
 
+def test__calc_jacobian():
+  # Arrange
+  expected = -1
+  r = 1001
+  p = 9907
+  # Act
+  actual = rsa.calc_jacobian(r, p)
+  # Assert
+  assert actual == expected
+
+# def test__calc_euler_criterion():
+#   # Arrange
+#   expected = -1
+#   r = 1001
+#   p = 9907
+#   # Act
+#   actual = rsa.calc_euler_criterion(r, p)
+#   # Assert
+#   assert actual == expected
+
+def test__generate_primes():
+  p, q = rsa.generate_primes(250) 
+  print((p), (q))
+  assert False
