@@ -6,11 +6,7 @@ sys.path.append(abspath)
 
 # Imports
 import rsa
-
-def test_calc_n__it_generates_n__equals_pq():
-  PRIME_1 = 61
-  PRIME_2 = 53
-  assert rsa.calc_n(PRIME_1, PRIME_2) == 3233
+from rsa import Primality
 
 def test_get_rand_bits__it_generates_not_equal_numbers():
   # Arrange
@@ -46,4 +42,36 @@ def test__fast_exp_mod():
   assert rsa.fast_exp_mod(3, 18, 29)       == 6
   assert rsa.fast_exp_mod(7, 66, 101)      == 30
   assert rsa.fast_exp_mod(4, 25, 53)       == 40
+  # Larger numbers
+  assert rsa.fast_exp_mod(457, 87457, 7987) == 5042
 
+def test__fermat_test():
+  prime_nums_lst = [838815654613746928755205315544445789313427350147837793096447, 6143, 51539607551, 108086391056891903, 108086391056891903, 227344844511754081845528645625545486374491 ]
+  for num in prime_nums_lst:
+    assert rsa.fermat_test(num) == Primality.ProbablyPrime
+
+def test__fermat_test():
+  prime_nums_lst = [838815654613746928755205315544445789313427350147837793096447, 6143, 51539607551, 108086391056891903, 108086391056891903, 227344844511754081845528645625545486374491 ]
+  for num in prime_nums_lst:
+    assert rsa.is_prime(num) == True
+
+# def test__jacobian_euler_test():
+#   prime_nums_lst = [838815654613746928755205315544445789313427350147837793096447, 6143, 51539607551, 108086391056891903, 108086391056891903, 227344844511754081845528645625545486374491 ]
+#   for num in prime_nums_lst:
+#     print(rsa.jacobian_euler_test(num))
+
+def test__generate_large_primes():
+  p, q = rsa.generate_primes(512)
+  assert (rsa.is_prime(p) == True and rsa.is_prime(q) == True)
+  print(p,q)
+
+def test_calc_n__it_generates_n__equals_pq():
+  p, q = rsa.generate_primes(1024)
+  assert rsa.calc_n(p, q) == p * q
+
+def test__calc_phi_n__and__calc_e():
+  p, q = rsa.generate_primes(1024)
+  phi_n = rsa.calc_phi_n(p, q)
+  e = rsa.calc_e(phi_n)
+  assert phi_n == (p - 1) * (q - 1)
+  assert rsa.gcd_euclidean(phi_n, e) == 1 , "Should be coprimes"
