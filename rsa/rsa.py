@@ -4,6 +4,8 @@ import sys
 from enum import Enum
 from numpy import random as rnd
 
+import math
+
 '''
   User Defined Types
 '''
@@ -26,16 +28,16 @@ def fast_exp_mod(base, exp, mod):
   '''
   a = 1               # Accumelator of the value
   c = base
-  print(mod)
-  print(sys.getsizeof(mod))
-  print(type(mod))
+  # print(mod)
+  # print(sys.getsizeof(mod))
+  # print(type(mod))
   n = exp
   while (n != 0):
     r = n % 2     # Check if the current base is 1 or 0
     # if(r == 1): print(f"a*c % mod = {(a * c) % mod}")
     if (r == 1):
       a = (a * c) % mod     # Accumelate the value
-    n = int(n / 2)          # For the next digit (in binary)
+    n = n // 2              # For the next digit (in binary)
     c = (c * c) % mod       # Calculate the square to be used in next step
     # print(f"r = {r}, a = {a}, n = {n}, c = {c}")
   return a
@@ -72,8 +74,8 @@ def fermat_test(n):
   # fermat condition (b)
   for r in r_lst:
     # b = (a**(n-1)) % n # Takes forever !!!
-    # b = fast_exp_mod(r, n-1, n)
-    b = pow(r, n-1, n)
+    b = fast_exp_mod(r, n-1, n)
+    # b = pow(r, n-1, n)
     # print(f"r = {r}, exp = {n - 1}, mod = {n} => result = {b}")
     if (b != 1):
       return Primality.Composite
@@ -142,8 +144,102 @@ def calc_e(phi_n):
     if (gcd_euclidean(phi_n, r) == 1): # Found the co-prime with phi_n
       return r
 
-def calc_d(e, phi_n):
-  return pow()
-
 def encrypt(m, key):
-  return True
+  e, n = key
+  c = fast_exp_mod(m, e, n)
+  return c
+
+def modInverse(a, m):
+    m0 = m
+    y = 0
+    x = 1
+    if (m == 1):
+        return 0
+    while (a > 1):
+        # q is quotient
+        q = a // m
+        t = m
+        # m is remainder now, process
+        # same as Euclid's algo
+        m = a % m
+        a = t
+        t = y
+        # Update x and y
+        y = x - q * y
+        x = t
+    # Make x positive
+    if (x < 0):
+        x = x + m0
+    return x
+
+def xgcd_iterative(a, b):
+   """ Calculates the gcd and Bezout coefficients, 
+   using the Extended Euclidean Algorithm (non-recursive).
+   (Source: extendedeuclideanalgorithm.com/code) 
+   """
+   #Set default values for the quotient, remainder, 
+   #s-variables and t-variables
+   q = 0
+   r = 1
+   s1 = 1 
+   s2 = 0
+   s3 = 1 
+   t1 = 0 
+   t2 = 1
+   t3 = 0
+   
+   '''
+   In each iteration of the loop below, we
+   calculate the new quotient, remainder, a, b,
+   and the new s-variables and t-variables.
+   r decreases, so we stop when r = 0
+   '''
+   while(r > 0):
+      #The calculations
+      q = math.floor(a/b)
+      r = a - q * b
+      s3 = s1 - q * s2
+      t3 = t1 - q * t2
+      
+      '''
+      The values for the next iteration, 
+      (but only if there is a next iteration)
+      '''
+      if(r > 0):
+         a = b
+         b = r
+         s1 = s2
+         s2 = s3
+         t1 = t2
+         t2 = t3
+
+   return abs(b), s2, t2
+
+def multinv(b, n):
+   """
+   Calculates the multiplicative inverse of a number b mod n,
+   using the Extended Euclidean Algorithm. If b does not have a
+   multiplicative inverse mod n, then throw an exception.
+   (Source: extendedeuclideanalgorithm.com/code)
+   """
+   
+   #Get the gcd and the second Bezout coefficient (t)
+   #from the Extended Euclidean Algorithm. (We don't need s)
+   my_gcd, _, t = xgcd_iterative(n, b)
+   
+   #It only has a multiplicative inverse if the gcd is 1
+   if(my_gcd == 1):
+      return t % n
+   else:
+      raise ValueError('{} has no multiplicative inverse modulo {}'.format(b, n))
+
+def calc_d(e, phi):
+  d = modInverse(e, phi)
+  # d = multinv(e, phi)
+  # d = multinv(phi, e)
+  return d
+
+def decrypt(c, private_key):
+  d, phi = private_key
+  m = fast_exp_mod(c, d, phi)
+  return m

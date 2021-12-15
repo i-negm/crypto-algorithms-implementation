@@ -75,3 +75,43 @@ def test__calc_phi_n__and__calc_e():
   e = rsa.calc_e(phi_n)
   assert phi_n == (p - 1) * (q - 1)
   assert rsa.gcd_euclidean(phi_n, e) == 1 , "Should be coprimes"
+
+def test__encryption_small():
+  msg = 123
+  print("msg", msg)
+  p, q = rsa.generate_primes(10)
+  print("p", p)
+  print("q", q)
+  phi_n = rsa.calc_phi_n(p, q)
+  print("phi_n", phi_n)
+  n = rsa.calc_n(p,q)
+  print("n", n)
+  e = rsa.calc_e(phi_n)
+  print("e", e)
+  c = rsa.encrypt(msg, (e, n))
+  print("c", c)
+  d = rsa.calc_d(e, phi_n)
+  print("d", d)
+  m = rsa.decrypt(c, (d, n))
+  print("m", m)
+  assert m == msg
+
+def test__encryption_big():
+  msg = 123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  print("msg", msg)
+  p, q = rsa.generate_primes(512)
+  print("p", p)
+  print("q", q)
+  phi_n = rsa.calc_phi_n(p, q)
+  print("phi_n", phi_n)
+  n = rsa.calc_n(p,q)
+  print("n", n)
+  e = rsa.calc_e(phi_n)
+  print("e", e)
+  c = rsa.encrypt(msg, (e, n))
+  print("c", c)
+  d = rsa.calc_d(e, phi_n)
+  print("d", d)
+  m = rsa.decrypt(c, (d, n))
+  print("m", m)
+  assert m == msg
