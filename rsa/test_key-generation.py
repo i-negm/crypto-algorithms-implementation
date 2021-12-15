@@ -16,16 +16,6 @@ def test_get_rand_bits__it_generates_not_equal_numbers():
   # Assert
   assert rand1 != rand2
 
-def test__calc_jacobian():
-  # Arrange
-  expected = -1
-  r = 1001
-  p = 9907
-  # Act
-  actual = rsa.calc_jacobian(r, p)
-  # Assert
-  assert actual == expected
-
 def test__gcd_euclidean():
   assert rsa.gcd_euclidean(612, 56)        == 4
   assert rsa.gcd_euclidean(56, 612)        == 4
