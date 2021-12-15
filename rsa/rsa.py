@@ -23,11 +23,11 @@ def fast_exp_mod(base, exp, mod):
   Problem 15.3.4: Fast exponentiation given certain powers
   https://mathstats.uncg.edu/sites/pauli/112/HTML/secfastexp.html#exfastexp47
   '''
-  a = 1               # Accumelator of the value
+  a = 1               # Accumelator of the value (Final value will be in it)
   c = base
   n = exp
   while (n != 0):
-    r = n % 2     # Check if the current base is 1 or 0
+    r = n % 2               # Check if the current digit is 1 or 0 (2 base)
     if (r == 1):
       a = (a * c) % mod     # Accumelate the value
     n = n // 2              # For the next digit (in binary)
@@ -57,15 +57,14 @@ def gcd_euclidean(a, b):
     b = r
   return a
 
-def fermat_test(n):
+def fermat_test(n, r_lst):
   '''
     Probabilistic Algorithm i.e. returns either composite or propably prime
   '''
   # All even numbers are composites
   if (n % 2 == 0):
     return Primality.Composite
-  # Generate uniformly distributed number over the range [2, n-2]
-  r_lst = [int(x) for x in (rnd.uniform(low=2, high=n-2, size=10))]
+  
   # fermat condition (b)
   for r in r_lst:
     b = fast_exp_mod(r, n-1, n)
@@ -85,7 +84,7 @@ def is_prime(num):
       return False
   
   # Run the fermat test also
-  if (fermat_test(num) == Primality.Composite):
+  if (fermat_test(num, r_lst) == Primality.Composite):
     return False
   
   return True # Survived 10 tests -> propably prime
